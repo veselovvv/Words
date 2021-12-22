@@ -5,6 +5,7 @@ import android.os.Bundle
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.veselovvv.words.databinding.ActivityMainBinding
 import com.veselovvv.words.db.WordDatabase
 import com.veselovvv.words.db.WordRepository
@@ -27,12 +28,17 @@ class MainActivity : AppCompatActivity() {
         binding.myViewModel = wordViewModel
         binding.lifecycleOwner = this
 
+        initRecyclerView()
+    }
+
+    private fun initRecyclerView() {
+        binding.recyclerView.layoutManager = LinearLayoutManager(this)
         displayWordsList()
     }
 
     private fun displayWordsList() {
         wordViewModel.words.observe(this, Observer {
-            
+            binding.recyclerView.adapter = RecyclerViewAdapter(it)
         })
     }
 }
