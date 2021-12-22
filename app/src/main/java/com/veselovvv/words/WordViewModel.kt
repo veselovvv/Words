@@ -1,5 +1,7 @@
 package com.veselovvv.words
 
+import androidx.databinding.Bindable
+import androidx.databinding.Observable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -7,12 +9,18 @@ import com.veselovvv.words.db.Word
 import com.veselovvv.words.db.WordRepository
 import kotlinx.coroutines.launch
 
-class WordViewModel(private val repository: WordRepository) : ViewModel() {
+class WordViewModel(private val repository: WordRepository) : ViewModel(), Observable {
 
+    val words = repository.words
+
+    @Bindable
     val inputWord = MutableLiveData<String>()
+    @Bindable
     val inputTranslate = MutableLiveData<String>()
 
+    @Bindable
     val saveOrUpdateButtonText = MutableLiveData<String>()
+    @Bindable
     val clearAllOrDeleteButtonText = MutableLiveData<String>()
 
     init {
@@ -24,15 +32,23 @@ class WordViewModel(private val repository: WordRepository) : ViewModel() {
         val word = inputWord.value!!
         val translate = inputTranslate.value!!
 
-        insertWord(Word(0, word, translate))
+        insert(Word(0, word, translate))
 
         inputWord.value = ""
         inputTranslate.value = ""
     }
 
-    private fun insertWord(word: Word) {
-        viewModelScope.launch {
-            repository.insert(word)
-        }
-    }
+    fun clearAllOrDelete() = clearAll()
+
+    fun insert(word: Word) = viewModelScope.launch { repository.insert(word) }
+
+    fun update(word: Word) = viewModelScope.launch { repository.update(word) }
+
+    fun delete(word: Word) = viewModelScope.launch { repository.delete(word) }
+
+    fun clearAll() = viewModelScope.launch { repository.deleteAll() }
+
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
+
+    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 }
