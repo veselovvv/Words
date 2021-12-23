@@ -6,8 +6,10 @@ import com.veselovvv.words.db.Word
 
 class WordsViewHolder(val binding: ListItemBinding) : RecyclerView.ViewHolder(binding.root) {
 
-    fun bind(word: Word) {
+    fun bind(word: Word, clickListener: (Word) -> Unit) {
         binding.wordTextView.text = word.word
         binding.translateTextView.text = word.translate
+
+        binding.listItemLayout.setOnClickListener { clickListener(word) }
     }
 }

@@ -7,7 +7,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.veselovvv.words.databinding.ListItemBinding
 import com.veselovvv.words.db.Word
 
-class RecyclerViewAdapter(private val words: List<Word>) : RecyclerView.Adapter<WordsViewHolder>() {
+class RecyclerViewAdapter(
+    private val words: List<Word>,
+    private val clickListener: (Word) -> Unit
+) : RecyclerView.Adapter<WordsViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
@@ -23,7 +26,7 @@ class RecyclerViewAdapter(private val words: List<Word>) : RecyclerView.Adapter<
     }
 
     override fun onBindViewHolder(holder: WordsViewHolder, position: Int) {
-        holder.bind(words[position])
+        holder.bind(words[position], clickListener)
     }
 
     override fun getItemCount(): Int {

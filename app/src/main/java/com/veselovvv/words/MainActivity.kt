@@ -2,11 +2,13 @@ package com.veselovvv.words
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.widget.Toast
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.veselovvv.words.databinding.ActivityMainBinding
+import com.veselovvv.words.db.Word
 import com.veselovvv.words.db.WordDatabase
 import com.veselovvv.words.db.WordRepository
 
@@ -38,7 +40,12 @@ class MainActivity : AppCompatActivity() {
 
     private fun displayWordsList() {
         wordViewModel.words.observe(this, Observer {
-            binding.recyclerView.adapter = RecyclerViewAdapter(it)
+            binding.recyclerView.adapter =
+                RecyclerViewAdapter(it, { selectedItem: Word -> listItemClicked(selectedItem) })
         })
+    }
+
+    private fun listItemClicked(word: Word) {
+        Toast.makeText(this, "Selected word is ${word.word}", Toast.LENGTH_LONG).show()
     }
 }
