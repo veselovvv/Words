@@ -31,6 +31,12 @@ class MainActivity : AppCompatActivity() {
         binding.lifecycleOwner = this
 
         initRecyclerView()
+
+        wordViewModel.message.observe(this, Observer {
+            it.getContentIfNotHandled()?.let {
+                Toast.makeText(this, it, Toast.LENGTH_LONG).show()
+            }
+        })
     }
 
     private fun initRecyclerView() {
@@ -46,8 +52,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun listItemClicked(word: Word) {
-        Toast.makeText(this, "Selected word is ${word.word}", Toast.LENGTH_LONG).show()
-
         wordViewModel.initUpdateAndDelete(word)
     }
 }
