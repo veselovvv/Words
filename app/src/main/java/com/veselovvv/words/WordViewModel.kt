@@ -2,6 +2,7 @@ package com.veselovvv.words
 
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
+import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,6 +26,11 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     val saveOrUpdateButtonText = MutableLiveData<String>()
     @Bindable
     val clearAllOrDeleteButtonText = MutableLiveData<String>()
+
+    private val statusMessage = MutableLiveData<Event<String>>()
+
+    val message: LiveData<Event<String>>
+        get() = statusMessage
 
     init {
         saveOrUpdateButtonText.value = "Save"
@@ -50,7 +56,11 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
     fun clearAllOrDelete() = if (isUpdateOrDelete) delete(wordToUpdateOrDelete) else clearAll()
 
-    fun insert(word: Word) = viewModelScope.launch { repository.insert(word) }
+    fun insert(word: Word) = viewModelScope.launch {
+        repository.insert(word)
+
+        statusMessage.value = Event("Word is inserted")
+    }
 
     fun update(word: Word) = viewModelScope.launch {
         repository.update(word)
@@ -62,6 +72,8 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
         saveOrUpdateButtonText.value = "Save"
         clearAllOrDeleteButtonText.value = "Clear all"
+
+        statusMessage.value = Event("Word is updated")
     }
 
     fun delete(word: Word) = viewModelScope.launch {
@@ -74,9 +86,15 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
         saveOrUpdateButtonText.value = "Save"
         clearAllOrDeleteButtonText.value = "Clear all"
+
+        statusMessage.value = Event("Word is deleted")
     }
 
-    fun clearAll() = viewModelScope.launch { repository.deleteAll() }
+    fun clearAll() = viewModelScope.launch { 
+        repository.deleteAll()
+
+        statusMessage.value = Event("Words are deleted")
+    }
 
     fun initUpdateAndDelete(word: Word) {
         inputWord.value = word.word
