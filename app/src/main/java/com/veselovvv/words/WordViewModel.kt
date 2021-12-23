@@ -38,19 +38,23 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     }
 
     fun saveOrUpdate() {
-        if (isUpdateOrDelete) {
-            wordToUpdateOrDelete.word = inputWord.value!!
-            wordToUpdateOrDelete.translate = inputTranslate.value!!
-
-            update(wordToUpdateOrDelete)
+        if (inputWord.value == null || inputTranslate.value == null) {
+            statusMessage.value = Event("Please fill the fields!")
         } else {
-            val word = inputWord.value!!
-            val translate = inputTranslate.value!!
+            if (isUpdateOrDelete) {
+                wordToUpdateOrDelete.word = inputWord.value!!
+                wordToUpdateOrDelete.translate = inputTranslate.value!!
 
-            insert(Word(0, word, translate))
+                update(wordToUpdateOrDelete)
+            } else {
+                val word = inputWord.value!!
+                val translate = inputTranslate.value!!
 
-            inputWord.value = ""
-            inputTranslate.value = ""
+                insert(Word(0, word, translate))
+
+                inputWord.value = ""
+                inputTranslate.value = ""
+            }
         }
     }
 
@@ -90,7 +94,7 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
         statusMessage.value = Event("Word is deleted")
     }
 
-    fun clearAll() = viewModelScope.launch { 
+    fun clearAll() = viewModelScope.launch {
         repository.deleteAll()
 
         statusMessage.value = Event("Words are deleted")
