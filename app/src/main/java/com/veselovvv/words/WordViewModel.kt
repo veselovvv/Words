@@ -38,7 +38,9 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     }
 
     fun saveOrUpdate() {
-        if (inputWord.value == null || inputTranslate.value == null) {
+        if (inputWord.value == null || inputTranslate.value == null
+            || inputWord.value == "" || inputTranslate.value == "") {
+
             statusMessage.value = Event("Please fill the fields!")
         } else {
             if (isUpdateOrDelete) {
