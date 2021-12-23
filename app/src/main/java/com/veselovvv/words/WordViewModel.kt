@@ -13,6 +13,9 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
     val words = repository.words
 
+    private var isUpdateOrDelete = false
+    private lateinit var wordToUpdateOrDelete: Word
+
     @Bindable
     val inputWord = MutableLiveData<String>()
     @Bindable
@@ -29,24 +32,62 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     }
 
     fun saveOrUpdate() {
-        val word = inputWord.value!!
-        val translate = inputTranslate.value!!
+        if (isUpdateOrDelete) {
+            wordToUpdateOrDelete.word = inputWord.value!!
+            wordToUpdateOrDelete.translate = inputTranslate.value!!
 
-        insert(Word(0, word, translate))
+            update(wordToUpdateOrDelete)
+        } else {
+            val word = inputWord.value!!
+            val translate = inputTranslate.value!!
 
-        inputWord.value = ""
-        inputTranslate.value = ""
+            insert(Word(0, word, translate))
+
+            inputWord.value = ""
+            inputTranslate.value = ""
+        }
     }
 
-    fun clearAllOrDelete() = clearAll()
+    fun clearAllOrDelete() = if (isUpdateOrDelete) delete(wordToUpdateOrDelete) else clearAll()
 
     fun insert(word: Word) = viewModelScope.launch { repository.insert(word) }
 
-    fun update(word: Word) = viewModelScope.launch { repository.update(word) }
+    fun update(word: Word) = viewModelScope.launch {
+        repository.update(word)
 
-    fun delete(word: Word) = viewModelScope.launch { repository.delete(word) }
+        inputWord.value = ""
+        inputTranslate.value = ""
+
+        isUpdateOrDelete = false
+
+        saveOrUpdateButtonText.value = "Save"
+        clearAllOrDeleteButtonText.value = "Clear all"
+    }
+
+    fun delete(word: Word) = viewModelScope.launch {
+        repository.delete(word)
+
+        inputWord.value = ""
+        inputTranslate.value = ""
+
+        isUpdateOrDelete = false
+
+        saveOrUpdateButtonText.value = "Save"
+        clearAllOrDeleteButtonText.value = "Clear all"
+    }
 
     fun clearAll() = viewModelScope.launch { repository.deleteAll() }
+
+    fun initUpdateAndDelete(word: Word) {
+        inputWord.value = word.word
+        inputTranslate.value = word.translate
+
+        isUpdateOrDelete = true
+        wordToUpdateOrDelete = word
+
+        saveOrUpdateButtonText.value = "Update"
+        clearAllOrDeleteButtonText.value = "Delete"
+    }
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 

@@ -47,5 +47,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun listItemClicked(word: Word) {
         Toast.makeText(this, "Selected word is ${word.word}", Toast.LENGTH_LONG).show()
+
+        wordViewModel.initUpdateAndDelete(word)
     }
 }

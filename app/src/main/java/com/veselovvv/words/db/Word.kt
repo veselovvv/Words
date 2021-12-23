@@ -9,11 +9,11 @@ data class Word(
 
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "word_id")
-    val id: Int,
+    var id: Int,
 
     @ColumnInfo(name = "word_name")
-    val word: String,
+    var word: String,
 
     @ColumnInfo(name = "word_translate")
-    val translate: String
+    var translate: String
 )
