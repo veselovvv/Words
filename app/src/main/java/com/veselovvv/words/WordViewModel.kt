@@ -64,41 +64,23 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
     fun insert(word: Word) = viewModelScope.launch {
         repository.insert(word)
-
         statusMessage.value = Event("Word is inserted")
     }
 
     fun update(word: Word) = viewModelScope.launch {
         repository.update(word)
-
-        inputWord.value = ""
-        inputTranslate.value = ""
-
-        isUpdateOrDelete = false
-
-        saveOrUpdateButtonText.value = "Save"
-        clearAllOrDeleteButtonText.value = "Clear all"
-
+        refreshUI()
         statusMessage.value = Event("Word is updated")
     }
 
     fun delete(word: Word) = viewModelScope.launch {
         repository.delete(word)
-
-        inputWord.value = ""
-        inputTranslate.value = ""
-
-        isUpdateOrDelete = false
-
-        saveOrUpdateButtonText.value = "Save"
-        clearAllOrDeleteButtonText.value = "Clear all"
-
+        refreshUI()
         statusMessage.value = Event("Word is deleted")
     }
 
     fun clearAll() = viewModelScope.launch {
         repository.deleteAll()
-
         statusMessage.value = Event("Words are deleted")
     }
 
@@ -111,6 +93,16 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
         saveOrUpdateButtonText.value = "Update"
         clearAllOrDeleteButtonText.value = "Delete"
+    }
+
+    private fun refreshUI() {
+        inputWord.value = ""
+        inputTranslate.value = ""
+
+        isUpdateOrDelete = false
+
+        saveOrUpdateButtonText.value = "Save"
+        clearAllOrDeleteButtonText.value = "Clear all"
     }
 
     override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
