@@ -11,9 +11,7 @@ import com.veselovvv.words.db.WordRepository
 import kotlinx.coroutines.launch
 
 class WordViewModel(private val repository: WordRepository) : ViewModel(), Observable {
-
     val words = repository.words
-
     private var isUpdateOrDelete = false
     private lateinit var wordToUpdateOrDelete: Word
 
@@ -28,60 +26,33 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     val clearAllOrDeleteButtonText = MutableLiveData<String>()
 
     private val statusMessage = MutableLiveData<Event<String>>()
-
     val message: LiveData<Event<String>>
         get() = statusMessage
 
     init {
-        saveOrUpdateButtonText.value = "Save"
-        clearAllOrDeleteButtonText.value = "Clear all"
+        addText()
     }
 
     fun saveOrUpdate() {
-        if (inputWord.value == null || inputTranslate.value == null
-            || inputWord.value == "" || inputTranslate.value == "") {
-
+        if (needToFillFields()) {
             statusMessage.value = Event("Please fill the fields!")
         } else {
             if (isUpdateOrDelete) {
                 wordToUpdateOrDelete.word = inputWord.value!!
                 wordToUpdateOrDelete.translate = inputTranslate.value!!
-
                 update(wordToUpdateOrDelete)
             } else {
                 val word = inputWord.value!!
                 val translate = inputTranslate.value!!
-
                 insert(Word(0, word, translate))
-
-                inputWord.value = ""
-                inputTranslate.value = ""
+                clearText()
             }
         }
     }
 
-    fun clearAllOrDelete() = if (isUpdateOrDelete) delete(wordToUpdateOrDelete) else clearAll()
-
     fun insert(word: Word) = viewModelScope.launch {
         repository.insert(word)
         statusMessage.value = Event("Word is inserted")
-    }
-
-    fun update(word: Word) = viewModelScope.launch {
-        repository.update(word)
-        refreshUI()
-        statusMessage.value = Event("Word is updated")
-    }
-
-    fun delete(word: Word) = viewModelScope.launch {
-        repository.delete(word)
-        refreshUI()
-        statusMessage.value = Event("Word is deleted")
-    }
-
-    fun clearAll() = viewModelScope.launch {
-        repository.deleteAll()
-        statusMessage.value = Event("Words are deleted")
     }
 
     fun initUpdateAndDelete(word: Word) {
@@ -95,17 +66,46 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
         clearAllOrDeleteButtonText.value = "Delete"
     }
 
-    private fun refreshUI() {
-        inputWord.value = ""
-        inputTranslate.value = ""
+    fun clearAllOrDelete() = if (isUpdateOrDelete) delete(wordToUpdateOrDelete) else clearAll()
 
-        isUpdateOrDelete = false
+    private fun needToFillFields(): Boolean {
+        return inputWord.value == null || inputTranslate.value == null ||
+               inputWord.value == "" || inputTranslate.value == ""
+    }
 
+    private fun addText() {
         saveOrUpdateButtonText.value = "Save"
         clearAllOrDeleteButtonText.value = "Clear all"
     }
 
-    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
+    private fun clearText() {
+        inputWord.value = ""
+        inputTranslate.value = ""
+    }
 
+    private fun update(word: Word) = viewModelScope.launch {
+        repository.update(word)
+        refreshUI()
+        statusMessage.value = Event("Word is updated")
+    }
+
+    private fun delete(word: Word) = viewModelScope.launch {
+        repository.delete(word)
+        refreshUI()
+        statusMessage.value = Event("Word is deleted")
+    }
+
+    private fun clearAll() = viewModelScope.launch {
+        repository.deleteAll()
+        statusMessage.value = Event("Words are deleted")
+    }
+
+    private fun refreshUI() {
+        clearText()
+        isUpdateOrDelete = false
+        addText()
+    }
+
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
     override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
 }
