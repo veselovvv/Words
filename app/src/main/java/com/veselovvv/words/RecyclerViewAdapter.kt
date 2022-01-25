@@ -11,7 +11,6 @@ class RecyclerViewAdapter(
     private val words: List<Word>,
     private val clickListener: (Word) -> Unit
 ) : RecyclerView.Adapter<WordsViewHolder>() {
-
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): WordsViewHolder {
         val layoutInflater = LayoutInflater.from(parent.context)
 
@@ -25,11 +24,8 @@ class RecyclerViewAdapter(
         return WordsViewHolder(binding)
     }
 
-    override fun onBindViewHolder(holder: WordsViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: WordsViewHolder, position: Int) =
         holder.bind(words[position], clickListener)
-    }
 
-    override fun getItemCount(): Int {
-        return words.size
-    }
+    override fun getItemCount() = words.size
 }
