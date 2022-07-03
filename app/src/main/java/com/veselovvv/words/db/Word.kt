@@ -6,7 +6,6 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "word_data_table")
 data class Word(
-
     @PrimaryKey(autoGenerate = true)
     @ColumnInfo(name = "word_id")
     var id: Int,

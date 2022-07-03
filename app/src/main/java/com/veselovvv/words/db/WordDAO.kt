@@ -5,7 +5,6 @@ import androidx.room.*
 
 @Dao
 interface WordDAO {
-
     @Insert
     suspend fun insertWord(word: Word): Long
 

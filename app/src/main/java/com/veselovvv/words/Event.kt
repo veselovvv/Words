@@ -6,8 +6,7 @@ open class Event<out T>(private val content: T) {
 
     // Returns the content and prevents its use again:
     fun getContentIfNotHandled(): T? =
-        if (hasBeenHandled)
-            null
+        if (hasBeenHandled) null
         else {
             hasBeenHandled = true
             content

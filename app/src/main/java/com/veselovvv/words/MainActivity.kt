@@ -1,8 +1,8 @@
 package com.veselovvv.words
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -13,13 +13,11 @@ import com.veselovvv.words.db.WordDatabase
 import com.veselovvv.words.db.WordRepository
 
 class MainActivity : AppCompatActivity() {
-
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordViewModel: WordViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         val dao = WordDatabase.getInstance(application).wordDAO
@@ -44,14 +42,10 @@ class MainActivity : AppCompatActivity() {
         displayWordsList()
     }
 
-    private fun displayWordsList() {
-        wordViewModel.words.observe(this, Observer {
-            binding.recyclerView.adapter =
-                RecyclerViewAdapter(it, { selectedItem: Word -> listItemClicked(selectedItem) })
-        })
-    }
+    private fun displayWordsList() = wordViewModel.words.observe(this, Observer {
+        binding.recyclerView.adapter =
+            RecyclerViewAdapter(it, { selectedItem: Word -> listItemClicked(selectedItem) })
+    })
 
-    private fun listItemClicked(word: Word) {
-        wordViewModel.initUpdateAndDelete(word)
-    }
+    private fun listItemClicked(word: Word) = wordViewModel.initUpdateAndDelete(word)
 }

@@ -34,9 +34,9 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     }
 
     fun saveOrUpdate() {
-        if (needToFillFields()) {
+        if (needToFillFields())
             statusMessage.value = Event("Please fill the fields!")
-        } else {
+        else {
             if (isUpdateOrDelete) {
                 wordToUpdateOrDelete.word = inputWord.value!!
                 wordToUpdateOrDelete.translate = inputTranslate.value!!
