@@ -1,4 +1,4 @@
-package com.veselovvv.words
+package com.veselovvv.words.ui
 
 import androidx.databinding.Bindable
 import androidx.databinding.Observable
@@ -6,12 +6,12 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.veselovvv.words.db.Word
-import com.veselovvv.words.db.WordRepository
+import com.veselovvv.words.data.Word
+import com.veselovvv.words.data.WordRepository
 import kotlinx.coroutines.launch
 
 class WordViewModel(private val repository: WordRepository) : ViewModel(), Observable {
-    val words = repository.words
+    val words = repository.getWords()
     private var isUpdateOrDelete = false
     private lateinit var wordToUpdateOrDelete: Word
 
@@ -34,25 +34,20 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
     }
 
     fun saveOrUpdate() {
-        if (needToFillFields())
-            statusMessage.value = Event("Please fill the fields!")
+        if (needToFillFields()) statusMessage.value = Event("Please fill the fields!")
         else {
             if (isUpdateOrDelete) {
                 wordToUpdateOrDelete.word = inputWord.value!!
                 wordToUpdateOrDelete.translate = inputTranslate.value!!
                 update(wordToUpdateOrDelete)
             } else {
-                val word = inputWord.value!!
-                val translate = inputTranslate.value!!
-                insert(Word(0, word, translate))
+                viewModelScope.launch {
+                    repository.insert(Word(0, inputWord.value!!, inputTranslate.value!!))
+                    statusMessage.value = Event("Word is inserted")
+                }
                 clearText()
             }
         }
-    }
-
-    fun insert(word: Word) = viewModelScope.launch {
-        repository.insert(word)
-        statusMessage.value = Event("Word is inserted")
     }
 
     fun initUpdateAndDelete(word: Word) {
@@ -68,10 +63,8 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
 
     fun clearAllOrDelete() = if (isUpdateOrDelete) delete(wordToUpdateOrDelete) else clearAll()
 
-    private fun needToFillFields(): Boolean {
-        return inputWord.value == null || inputTranslate.value == null ||
-               inputWord.value == "" || inputTranslate.value == ""
-    }
+    private fun needToFillFields() = inputWord.value == null || inputTranslate.value == null
+            || inputWord.value == "" || inputTranslate.value == ""
 
     private fun addText() {
         saveOrUpdateButtonText.value = "Save"
@@ -106,6 +99,6 @@ class WordViewModel(private val repository: WordRepository) : ViewModel(), Obser
         addText()
     }
 
-    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
-    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) {}
+    override fun removeOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) = Unit
+    override fun addOnPropertyChangedCallback(callback: Observable.OnPropertyChangedCallback?) = Unit
 }

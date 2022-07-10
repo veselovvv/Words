@@ -1,4 +1,4 @@
-package com.veselovvv.words.db
+package com.veselovvv.words.data
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
