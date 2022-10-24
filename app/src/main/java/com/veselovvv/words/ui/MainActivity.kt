@@ -19,7 +19,7 @@ class MainActivity : AppCompatActivity() {
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
         val factory = WordViewModelFactory(WordRepository.Base(application))
-        wordViewModel = ViewModelProvider(this, factory).get(WordViewModel::class.java)
+        wordViewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
 
         with(binding) {
             myViewModel = wordViewModel
@@ -27,14 +27,14 @@ class MainActivity : AppCompatActivity() {
             recyclerView.layoutManager = LinearLayoutManager(this@MainActivity)
         }
 
-        wordViewModel.words.observe(this) {
-            binding.recyclerView.adapter = RecyclerViewAdapter(it) { selectedItem ->
+        wordViewModel.observeWords(this) { words ->
+            binding.recyclerView.adapter = RecyclerViewAdapter(words) { selectedItem ->
                 wordViewModel.initUpdateAndDelete(selectedItem)
             }
         }
 
-        wordViewModel.message.observe(this) {
-            it.getContentIfNotHandled()?.let { text ->
+        wordViewModel.observeMessage(this) { event ->
+            event.getContentIfNotHandled()?.let { text ->
                 Snackbar.make(binding.root, text, Snackbar.LENGTH_SHORT).show()
             }
         }

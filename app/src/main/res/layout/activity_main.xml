@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="Word"
+            android:hint="@string/word"
             android:text="@={myViewModel.inputWord}"
             android:textStyle="bold" />
 
@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginBottom="8dp"
             android:ems="10"
-            android:hint="Translate"
+            android:hint="@string/translate"
             android:text="@={myViewModel.inputTranslate}"
             android:textStyle="bold" />
 
