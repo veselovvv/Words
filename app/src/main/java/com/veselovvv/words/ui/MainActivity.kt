@@ -9,16 +9,22 @@ import com.google.android.material.snackbar.Snackbar
 import com.veselovvv.words.R
 import com.veselovvv.words.data.WordRepository
 import com.veselovvv.words.databinding.ActivityMainBinding
+import dagger.hilt.android.AndroidEntryPoint
+import javax.inject.Inject
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
     private lateinit var wordViewModel: WordViewModel
+
+    @Inject
+    lateinit var repository: WordRepository
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
 
-        val factory = WordViewModelFactory(WordRepository.Base(application))
+        val factory = WordViewModelFactory(repository)
         wordViewModel = ViewModelProvider(this, factory)[WordViewModel::class.java]
 
         with(binding) {

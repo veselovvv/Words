@@ -5,6 +5,7 @@ import androidx.databinding.Observable
 import androidx.lifecycle.*
 import com.veselovvv.words.data.Word
 import com.veselovvv.words.data.WordRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 
 class WordViewModel(private val repository: WordRepository) : ViewModel(), Observable {
