@@ -20,13 +20,15 @@ class MainPage {
 
         buttonUi.checkIsVisible(id = R.id.save_or_update_button)
         buttonUi.checkIsVisible(id = R.id.clear_all_or_delete_button)
-        buttonUi.checkTextEquals(id = R.id.save_or_update_button, text = "Save")
-        buttonUi.checkTextEquals(id = R.id.clear_all_or_delete_button, text = "Clear all")
+        checkSaveOrUpdateButtonTextState(text = "Save")
+        checkClearAllOrDeleteButtonTextState(text = "Clear all")
 
         recyclerViewUi.checkInitialState()
     }
 
     fun clickSaveOrUpdateButton() = buttonUi.clickButton(id = R.id.save_or_update_button)
+    fun clickClearAllOrDeleteButton() = buttonUi.clickButton(id = R.id.clear_all_or_delete_button)
+    fun clickOnItemInList(index: Int) = recyclerViewUi.clickOnItemInList(index = index)
 
     fun typeInWordTextField(text: String) =
         textFieldUi.typeIn(id = R.id.word_text, text = text)
@@ -42,4 +44,10 @@ class MainPage {
 
     fun checkWordsListState(words: List<Pair<String, String>>) =
         recyclerViewUi.checkWordsListState(words = words)
+
+    fun checkSaveOrUpdateButtonTextState(text: String) =
+        buttonUi.checkTextEquals(id = R.id.save_or_update_button, text = text)
+
+    fun checkClearAllOrDeleteButtonTextState(text: String) =
+        buttonUi.checkTextEquals(id = R.id.clear_all_or_delete_button, text = text)
 }
