@@ -116,4 +116,67 @@ class WordsTest {
             )
         )
     }
+
+    /**
+     * 0. addWords()
+     * 1. Click on first item in the list (index = 0)
+     * Check word text field state with text "Apple"
+     * Check translate text field state with text "Yabloko"
+     * Check "Save or update" button text is "Update"
+     * Check "Clear all or delete" button text is "Delete"
+     * 2. Recreate activity
+     * Check word text field state with text "Apple"
+     * Check translate text field state with text "Yabloko"
+     * Check "Save or update" button text is "Update"
+     * Check "Clear all or delete" button text is "Delete"
+     * 3. Click "Clear all or delete" button
+     * Check word text field state with text ""
+     * Check translate text field state with text ""
+     * Check "Save or update" button text is "Save"
+     * Check "Clear all or delete" button text is "Clear all"
+     * Check words list state with one item with word "Water" and translation "Woda"
+     * 4. Recreate activity
+     * Check word text field state with text ""
+     * Check translate text field state with text ""
+     * Check "Save or update" button text is "Save"
+     * Check "Clear all or delete" button text is "Clear all"
+     * Check words list state with one item with word "Water" and translation "Woda"
+     */
+    @Test
+    fun deleteWord() = with(MainPage()) {
+        addWords()
+        clickOnItemInList(index = 0)
+        checkWordTextFieldState(text = "Apple")
+        checkTranslateTextFieldState(text = "Yabloko")
+        checkSaveOrUpdateButtonTextState(text = "Update")
+        checkClearAllOrDeleteButtonTextState(text = "Delete")
+
+        activityScenarioRule.scenario.recreate()
+        checkWordTextFieldState(text = "Apple")
+        checkTranslateTextFieldState(text = "Yabloko")
+        checkSaveOrUpdateButtonTextState(text = "Update")
+        checkClearAllOrDeleteButtonTextState(text = "Delete")
+
+        clickClearAllOrDeleteButton()
+        checkWordTextFieldState(text = "")
+        checkTranslateTextFieldState(text = "")
+        checkSaveOrUpdateButtonTextState(text = "Save")
+        checkClearAllOrDeleteButtonTextState(text = "Clear all")
+        checkWordsListState(
+            words = listOf(
+                Pair("Water", "Woda")
+            )
+        )
+
+        activityScenarioRule.scenario.recreate()
+        checkWordTextFieldState(text = "")
+        checkTranslateTextFieldState(text = "")
+        checkSaveOrUpdateButtonTextState(text = "Save")
+        checkClearAllOrDeleteButtonTextState(text = "Clear all")
+        checkWordsListState(
+            words = listOf(
+                Pair("Water", "Woda")
+            )
+        )
+    }
 }
