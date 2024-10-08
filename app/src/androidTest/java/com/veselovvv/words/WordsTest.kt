@@ -262,6 +262,20 @@ class WordsTest {
         )
     }
 
-    //TODO
-    //4. delete all items, rotate
+    /**
+     * 0. addWords()
+     * 1. Click "Clear all or delete" button
+     * Check initial state
+     * 2. Recreate activity
+     * Check initial state
+     */
+    @Test
+    fun deleteAllWords() = with(MainPage()) {
+        addWords()
+        clickClearAllOrDeleteButton()
+        checkInitialState()
+
+        activityScenarioRule.scenario.recreate()
+        checkInitialState()
+    }
 }
